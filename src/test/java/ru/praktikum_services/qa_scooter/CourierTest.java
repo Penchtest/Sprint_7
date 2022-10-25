@@ -1,6 +1,7 @@
 package ru.praktikum_services.qa_scooter;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class CourierTest {
         //login
         LoginRequest loginRequest = LoginRequestGenerator.from(randomCourierRequest);
 
-        int id = courierClient.login(loginRequest)
+         id = courierClient.login(loginRequest)
                 .assertThat()
                 .statusCode(SC_OK)
                 .body("id", notNullValue())
@@ -101,4 +102,21 @@ public class CourierTest {
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
+    @Test
+    @DisplayName("Courier with non-unique login should not be created")
+    public void courierWithNonUniqueLoginShouldNotBeCreated(){
+        CourierRequest randomCourierRequest = getRandomCourierRequest();
+        courierClient.create(randomCourierRequest)
+                .assertThat()
+                .statusCode(SC_CREATED)
+                .and()
+                .body("ok", equalTo(true));
+
+        randomCourierRequest.setPassword(RandomStringUtils.randomAlphabetic(5));
+        courierClient.create(randomCourierRequest)
+                .assertThat()
+                .statusCode(SC_CONFLICT)
+                .and()
+                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
+    }
 }

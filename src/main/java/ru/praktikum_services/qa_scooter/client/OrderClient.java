@@ -18,7 +18,7 @@ public class OrderClient extends RestClient {
     public ValidatableResponse cancelOrder(Integer track) {
         return given()
                 .spec(getDefaultRequestSpec())
-                .body(track)
+                .body("{\"track\": "  + track +"}")
                 .put("orders/cancel")
                 .then();
     }

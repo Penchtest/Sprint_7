@@ -10,6 +10,7 @@ import ru.praktikum_services.qa_scooter.client.OrderClient;
 import ru.praktikum_services.qa_scooter.dto.OrderRequest;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static ru.praktikum_services.qa_scooter.generator.OrderRequestGenerator.getRandomOrderRequest;
@@ -33,11 +34,12 @@ public class OrderParametrizedTest {
 
 
     @After
+    //Данный тест падает, т.к. запрос вместо 200 возвращает 400 ошибку
     public void tearDown() {
        if (track != null)
            orderClient.cancelOrder(track)
                     .assertThat()
-                   .statusCode(SC_CREATED)
+                   .statusCode(SC_OK)
                    .body("ok", equalTo(true));
     }
 
@@ -61,12 +63,12 @@ public class OrderParametrizedTest {
 
         OrderRequest randomOrderRequest = getRandomOrderRequest();
         randomOrderRequest.setColor(color);
-      Integer track =  orderClient.createOrder(randomOrderRequest)
+        track = orderClient.createOrder(randomOrderRequest)
                 .assertThat()
                 .statusCode(SC_CREATED)
                 .and()
                 .body("track", notNullValue())
                .extract()
               .path("track");
-    }
+        }
 }

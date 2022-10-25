@@ -50,7 +50,7 @@ public class LoginTest {
         loginRequest.setLogin(randomCourierRequest.getLogin());
         loginRequest.setPassword(randomCourierRequest.getPassword());
 
-        int id = courierClient.login(loginRequest)
+         id = courierClient.login(loginRequest)
                 .assertThat()
                 .statusCode(SC_OK)
                 .body("id", notNullValue())
