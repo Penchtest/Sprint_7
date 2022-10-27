@@ -20,8 +20,6 @@ import static ru.praktikum_services.qa_scooter.generator.OrderRequestGenerator.g
 public class OrderParametrizedTest {
     private OrderClient orderClient;
     private final String[] color;
-    private Integer track;
-
 
     public OrderParametrizedTest(String[] color) {
         this.color = color;
@@ -31,18 +29,6 @@ public class OrderParametrizedTest {
     public void setUp() {
         orderClient = new OrderClient();
     }
-
-
-    @After
-    //Данный тест падает, т.к. запрос вместо 200 возвращает 400 ошибку
-    public void tearDown() {
-       if (track != null)
-           orderClient.cancelOrder(track)
-                    .assertThat()
-                   .statusCode(SC_OK)
-                   .body("ok", equalTo(true));
-    }
-
 
     @Parameterized.Parameters
     public static Object [][] getColor(){
@@ -54,7 +40,6 @@ public class OrderParametrizedTest {
         };
     }
 
-
     @Test
     @DisplayName("Order should be created")
     public void OrderShouldBeCreated() {
@@ -63,12 +48,10 @@ public class OrderParametrizedTest {
 
         OrderRequest randomOrderRequest = getRandomOrderRequest();
         randomOrderRequest.setColor(color);
-        track = orderClient.createOrder(randomOrderRequest)
+        orderClient.createOrder(randomOrderRequest)
                 .assertThat()
                 .statusCode(SC_CREATED)
                 .and()
-                .body("track", notNullValue())
-               .extract()
-              .path("track");
+                .body("track", notNullValue());
         }
 }

@@ -15,15 +15,6 @@ public class OrderClient extends RestClient {
                 .then();
     }
 
-    public ValidatableResponse cancelOrder(Integer track) {
-        return given()
-                .spec(getDefaultRequestSpec())
-                .body("{\"track\": "  + track +"}")
-                .put("orders/cancel")
-                .then();
-    }
-
-
     public ValidatableResponse getOrderList() {
         return given()
                 .spec(getDefaultRequestSpec())
